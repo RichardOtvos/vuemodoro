@@ -1,12 +1,14 @@
 <template>
     <div>
-        <h1>What task are you working on?</h1>
+        <h1>What do you want to work on?</h1>
         <input type="text" v-model="taskName">
         <p>{{taskName}}</p>
     </div>
 </template>
 
 <script>
+
+
     export default {
         name: 'VumemodoroView',
         data: function () {

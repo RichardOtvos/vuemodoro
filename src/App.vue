@@ -1,17 +1,18 @@
 <template>
     <div id="app">
-        <HelloWorld msg="Welcome to Vuemodoro"/>
         <VuemodoroView/>
+        <VuemodoroTimer v-bind:pomodoro-minutes="25"/>
     </div>
 </template>
 
 <script>
     import VuemodoroView from './components/VuemodoroView.vue'
-
+    import VuemodoroTimer from './components/VuemodoroTimer.vue';
     export default {
         name: 'app',
         components: {
-            VuemodoroView
+            VuemodoroView,
+            VuemodoroTimer
         }
     }
 </script>
