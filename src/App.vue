@@ -1,13 +1,14 @@
 <template>
     <div id="app">
-        <VuemodoroView/>
         <VuemodoroTimer v-bind:pomodoro-minutes="25"/>
+        <img src="./assets/pomo.svg" alt="" aria-hidden="true">
     </div>
 </template>
 
 <script>
-    import VuemodoroView from './components/VuemodoroView.vue'
+    import VuemodoroView from './components/VuemodoroView.vue';
     import VuemodoroTimer from './components/VuemodoroTimer.vue';
+
     export default {
         name: 'app',
         components: {
@@ -22,8 +23,16 @@
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        box-sizing: border-box;
         text-align: center;
         color: #2c3e50;
-        margin-top: 60px;
+        padding-top: 60px;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    #app img{
+        padding-bottom: 30px;
     }
 </style>
