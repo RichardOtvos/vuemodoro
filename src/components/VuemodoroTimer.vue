@@ -1,8 +1,17 @@
 <template>
     <div>
-        <countdown v-bind:time="getPomodoroLength" class="timer">
+        <countdown
+            class="timer"
+            v-bind:time="getPomodoroLength"
+            v-on:countdownprogress="onCountdownProgress"
+            v-bind:auto-start="false"
+            ref="countdown"
+        >
             <template slot-scope="props">{{props.minutes}}:{{props.seconds}}</template>
         </countdown>
+        <button class="start-button" v-on:click="onStartCountdown">Start</button>
+        <button class="start-button" v-on:click="onPauseCountdown">Pause</button>
+        <button class="start-button" v-on:click="onStopCountdown">Stop</button>
     </div>
 </template>
 
@@ -21,8 +30,19 @@
                 return this.pomodoroMinutes * 60 * 1000;
             }
         },
-        data: function () {
-            return {}
+        methods: {
+            onCountdownProgress: function(data){
+              document.title =`${data.minutes}:${data.seconds}`;
+            },
+            onStartCountdown: function(){
+                this.$refs.countdown.start();
+            },
+            onStopCountdown: function(){
+                this.$refs.countdown.stop();
+            },
+            onPauseCountdown: function(){
+                this.$refs.countdown.pause();
+            }
         }
     }
 </script>
