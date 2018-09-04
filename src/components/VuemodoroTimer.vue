@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="vuemodoro-timer">
         <countdown
-            class="timer"
+            class="countdown"
             v-bind:time="pomodoroLength"
             v-on:countdownprogress="onCountdownProgress"
             v-on:countdownstart="onCountdownStart"
@@ -11,16 +11,25 @@
         >
             <template slot-scope="props">{{props.minutes}}:{{props.seconds}}</template>
         </countdown>
-        <button class="button" v-if="!isCountdownRunning" v-on:click="onStartCountdown">Start</button>
-        <button class="button" v-else v-on:click="onPauseCountdown">Pause</button>
-        <button class="button" v-on:click="onStopCountdown">Stop</button>
+        <div class="timer-controls">
+            <font-awesome-icon class='icon' size="4x" fixed-width icon="play" v-if="!isCountdownRunning" v-on:click="onStartCountdown"/>
+            <font-awesome-icon class='icon' size="4x" fixed-width icon="pause" v-else v-on:click="onPauseCountdown"/>
+            <font-awesome-icon class='icon' size="4x" fixed-width icon="stop" v-on:click="onStopCountdown"/>
+        </div>
     </div>
 </template>
 
 <script>
     import VueCountdown from '@xkeshi/vue-countdown';
+    import {library} from '@fortawesome/fontawesome-svg-core';
+    import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+    import {faPlay, faPause, faStop} from '@fortawesome/free-solid-svg-icons';
 
-    const components = {};
+    library.add(faPlay, faPause, faStop);
+
+    const components = {
+        FontAwesomeIcon
+    };
     components[VueCountdown.name] = VueCountdown;
 
     export default {
@@ -36,11 +45,12 @@
         },
         created: function () {
             this.pomodoroLength = this.getPomodoroLength();
+            this.changePageTitle('Start your Pomodoro!');
         },
         methods: {
             //Countdown component emitted events
             onCountdownProgress: function (data) {
-                document.title = `${data.minutes}:${data.seconds}`;
+                this.changePageTitle(`${data.minutes}:${data.seconds}`);
             },
             onCountdownStart: function () {
                 this.isCountdownRunning = true;
@@ -60,9 +70,13 @@
                 this.$refs.countdown.stop();
                 this.$refs.countdown.init();
                 this.isCountdownRunning = false;
+                this.changePageTitle('Start your Pomodoro!');
             },
             getPomodoroLength: function () {
                 return this.pomodoroMinutes * 60 * 1000;
+            },
+            changePageTitle: function (newTitle) {
+                document.title = newTitle;
             }
 
         }
@@ -70,7 +84,22 @@
 </script>
 
 <style scoped>
-    .timer {
+    .countdown {
         font-size: 10em;
+    }
+    .timer-controls{
+        display: inline-flex;
+        flex-direction: column;
+        position: relative;
+        top: -60px;
+    }
+    .icon{
+        color: #e9afb1;
+        margin: 5px;
+    }
+
+    .icon:hover{
+        cursor: pointer;
+        color: #be1f2e;
     }
 </style>
