@@ -1,6 +1,11 @@
 <template>
     <div id="app">
-        <VuemodoroTimer v-bind:pomodoro-minutes="25"/>
+        <VuemodoroTimer
+            v-bind:pomodoro-minutes="25"
+            pomodoro-end-sound="bell"
+            v-bind:break-minutes="5"
+            break-end-sound="bell"
+        />
         <img src="./assets/pomo.svg" alt="" aria-hidden="true">
     </div>
 </template>

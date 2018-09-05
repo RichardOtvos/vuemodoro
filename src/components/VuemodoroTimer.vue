@@ -6,6 +6,7 @@
             v-on:countdownprogress="onCountdownProgress"
             v-on:countdownstart="onCountdownStart"
             v-on:countdownpause="onCountdownPause"
+            v-on:countdownend="onCountdownEnd"
             v-bind:auto-start="false"
             ref="countdown"
         >
@@ -35,16 +36,18 @@
     export default {
         name: 'VuemodoroTimer',
         components,
-        props: ['pomodoroMinutes'],
+        props: ['pomodoroMinutes','pomodoroEndSound', 'breakMinutes', 'breakEndSound'],
         data: function () {
             return {
                 isCountdownRunning: false,
                 shouldResetTimer: false,
-                pomodoroLength: 0
+                pomodoroLength: 0,
+                breakLength: 0
             }
         },
         created: function () {
-            this.pomodoroLength = this.getPomodoroLength();
+            this.pomodoroLength = this.getMinutesInMs(this.pomodoroMinutes);
+            this.breakLength = this.getMinutesInMs(this.breakMinutes);
             this.changePageTitle('Start your Pomodoro!');
         },
         methods: {
@@ -58,6 +61,12 @@
             onCountdownPause: function () {
                 this.isCountdownRunning = false;
             },
+            onCountdownEnd: function () {
+                this.isCountdownRunning = false;
+                this.playSound(this.pomodoroEndSound);
+                this.changePageTitle('Start your Pomodoro!');
+
+            },
 
             //Own events
             onStartCountdown: function () {
@@ -67,17 +76,26 @@
                 this.$refs.countdown.pause();
             },
             onStopCountdown: function () {
-                this.$refs.countdown.stop();
+                this.$refs.countdown.pause();
                 this.$refs.countdown.init();
-                this.isCountdownRunning = false;
                 this.changePageTitle('Start your Pomodoro!');
             },
-            getPomodoroLength: function () {
-                return this.pomodoroMinutes * 60 * 1000;
+
+            //Non-event methods
+            getMinutesInMs: function (timeInMinutes) {
+                return timeInMinutes * 60 * 1000;
             },
             changePageTitle: function (newTitle) {
                 document.title = newTitle;
+            },
+            playSound (sfxName) {
+                if(sfxName) {
+                    const audio = new Audio(`/sounds/${sfxName}.mp3`);
+                    audio.play();
+                }
             }
+
+
 
         }
     }
