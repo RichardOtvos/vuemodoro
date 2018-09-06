@@ -2,7 +2,7 @@
     <div class="vuemodoro-timer">
         <countdown
             class="countdown"
-            v-bind:time="pomodoroLength"
+            v-bind:time="countdownLength"
             v-on:countdownprogress="onCountdownProgress"
             v-on:countdownstart="onCountdownStart"
             v-on:countdownpause="onCountdownPause"
@@ -36,18 +36,38 @@
     export default {
         name: 'VuemodoroTimer',
         components,
-        props: ['pomodoroMinutes','pomodoroEndSound', 'breakMinutes', 'breakEndSound'],
+        props: {
+            pomodoroMinutes: {
+                type: Number,
+                default: 25
+            },
+            breakMinutes: {
+                type: Number,
+                default: 5
+            },
+            pomodoroEndSound: {
+                type: String,
+                default: 'bell'
+            },
+            breakEndSound: {
+                type: String,
+                default: 'bell'
+            }
+        },
         data: function () {
             return {
                 isCountdownRunning: false,
                 shouldResetTimer: false,
                 pomodoroLength: 0,
-                breakLength: 0
+                breakLength: 0,
+                countdownLength:0,
+                nextState: 'break',
             }
         },
         created: function () {
             this.pomodoroLength = this.getMinutesInMs(this.pomodoroMinutes);
             this.breakLength = this.getMinutesInMs(this.breakMinutes);
+            this.countdownLength = this.pomodoroLength;
             this.changePageTitle('Start your Pomodoro!');
         },
         methods: {
@@ -63,9 +83,8 @@
             },
             onCountdownEnd: function () {
                 this.isCountdownRunning = false;
+                this.initNextState();
                 this.playSound(this.pomodoroEndSound);
-                this.changePageTitle('Start your Pomodoro!');
-
             },
 
             //Own events
@@ -92,6 +111,18 @@
                 if(sfxName) {
                     const audio = new Audio(`/sounds/${sfxName}.mp3`);
                     audio.play();
+                }
+            },
+            initNextState(){
+                if(this.nextState ==='break'){
+                    this.nextState ='pomodoro';
+                    this.countdownLength=this.breakLength;
+                    this.changePageTitle('Start your break!');
+                }
+                else if(this.nextState ==='pomodoro'){
+                    this.nextState ='break';
+                    this.countdownLength=this.pomodoroLength;
+                    this.changePageTitle('Start your Pomodoro!');
                 }
             }
 
